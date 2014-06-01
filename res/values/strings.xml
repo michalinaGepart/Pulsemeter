@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_message">Your mobile phone doesn\'t support Bluetooth. The measurements cannot be made.</string>
+    <string name="dialog_title">Oops!</string>
+    <string name="app_name">Pulsemeter</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="measurePulse">Measure Pulse</string>
+    <string name="info">Information</string>
+    <string name="history">History</string>
+    <string name="information">\tYour pulse is the rate at which your heart beats. Your pulse is usually called your heart rate, which is the number of times your heart beats each minute (bpm). But the rhythm and strength of the heartbeat can also be noted, as well as whether the blood vessel feels hard or soft. Changes in your heart rate or rhythm, a weak pulse, or a hard blood vessel may be caused by heart disease or another problem.\n
+\tAs your heart pumps blood through your body, you can feel a pulsing in some of the blood vessels close to the skin\'s surface, such as in your wrist, neck, or upper arm. Counting your pulse rate is a simple way to find out how fast your heart is beating.\n
+\tYour doctor will usually check your pulse during a physical examination or in an emergency, but you can easily check your pulse by using this application. You can check your pulse the first thing in the morning, just after you wake up but before you get out of bed. This is called a resting pulse. Some people like to check their pulse before and after they exercise.\n
+\tYou check your pulse rate by counting the beats in a set period of time (at least 15 to 20 seconds) and multiplying that number to get the number of beats per minute. Your pulse changes from minute to minute. It will be faster when you exercise, have a fever, or are under stress. It will be slower when you are resting.</string>
+	<string name="mTitle">Measurements</string>
+	<string name="mInfo">Information</string>
+	<string name="mHistory">History</string>
+	<string name="logo">Logo</string>
+	<string name="diagnosis">Your pulse is: </string>
+	<string name="info1">Measuring Pulse</string>
+	<string name="info2">Why is it done?</string>
+	<string name="info3">Results</string>
+	<string name="information2">Your pulse is checked to:\n
+See how well the heart is working. In an emergency situation, your pulse rate can help find out if the heart is pumping enough blood.\n
+Help find the cause of symptoms, such as an irregular or rapid heartbeat (palpitations), dizziness, fainting, chest pain, or shortness of breath.\n
+Check for blood flow after an injury or when a blood vessel may be blocked.\n
+Check on medicines or diseases that cause a slow heart rate. Your doctor may ask you to check your pulse every day if you have heart disease or if you are taking certain medicines that can slow your heart rate, such as digoxin or beta-blockers (such as atenolol or propranolol).\n 
+Check your general health and fitness level. Checking your pulse rate at rest, during exercise, or immediately after vigorous exercise can give you important information about your overall fitness level. </string>
+<string name="information3">The chart below shows the normal range of a resting heart rate (pulse rate after resting 10 minutes) in beats per minute, according to age. Many things can cause changes in your normal heart rate, including your age, activity level, and the time of day.</string>
+<string name="historyDate">Date of measurement: </string>
+<string name="historyResult">Result:</string>
+<string name="noMeasure">No measurements have been made yet.</string>
+<string name="measureStart">START</string>
+
+</resources>

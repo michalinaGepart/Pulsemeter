@@ -14,7 +14,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 	private final static int REQUEST_ENABLE_BT = 1;
 	int resultCode;
 	View measurePulse, measurementsHistory, measurementsInformation;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

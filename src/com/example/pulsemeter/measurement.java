@@ -3,15 +3,22 @@ package com.example.pulsemeter;
 
 
 import java.io.IOException;
+import static com.example.pulsemeter.Constants.TABLE_NAME;
+import static com.example.pulsemeter.Constants.timeOfMeasurement;
+import static com.example.pulsemeter.Constants.resultOfMeasurement;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -30,7 +37,7 @@ public class measurement extends ActionBarActivity implements OnClickListener{
 
 	GraphView graphView;
 	TextView text;
-	int result; // pulses per minute
+	int finalresult; // pulses per minute
 	GraphViewSeries dataToDraw;
 	ArrayList<Integer> measurements;
 	View start;
@@ -45,7 +52,7 @@ public class measurement extends ActionBarActivity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.measure);
 		x = 0;
-		result = 0;
+		finalresult = 0;
 		start = (Button) findViewById(R.id.measureStart);
 		start.setOnClickListener(this);
 		text = (TextView)findViewById(R.id.diagnosis);
@@ -67,37 +74,38 @@ public class measurement extends ActionBarActivity implements OnClickListener{
 
 	}
 
-	public void drawGraph(int val)
+	public void drawGraph()
 	{
 
-		// append data 
-		dataToDraw = new GraphViewSeries(new GraphViewData[] {
+		int howMany = finalresult;
+		int step = 60/finalresult;
+		int x = 0;
+		dataToDraw = new GraphViewSeries(new GraphViewData[] { new GraphViewData(6,8)
 			});
 		graphView.addSeries(dataToDraw); // data
-		dataToDraw.appendData(new GraphViewData(x, val){}, true, 60);
-		x++;
+//		dataToDraw.appendData(new GraphViewData(x, finalresult){}, true, 60);
+//		for(int i=0; i < 2; i++)
+//		{
+//			dataToDraw.appendData(new GraphViewData(x, 1){}, true, 60);
+//			x += step;
+//			dataToDraw.appendData(new GraphViewData(x, 0){}, true, 60);
+//			x += step;
+//		}
 	}
 
-	public void calculateResult()
+	public void calculateResult(int result)
 	{
 		String ex = "Your pulse is: ";
-		result = 0;
-		int prev = 0;
+		
+		System.out.println("final result = " + finalresult + "result : " + result);
 
-		for(int val : measurements){
-			if(prev > val){
-				result++;
-				System.out.println(val);
-			}
-		}
-
-		ex += result + " pulses/min";
+		ex += finalresult + " pulses/min";
 		text = (TextView)findViewById(R.id.diagnosis);
-		if(result >= 60 && result <= 100){
+		if(finalresult >= 60 && finalresult <= 100){
 			ex += "\nThis is normal pulse rate.";
 			text.setText(ex);
 		}
-		else if(result < 60){
+		else if(finalresult < 60){
 			ex += "\nThis is low pulse rate.";
 			text.setText(ex);
 		}
@@ -121,14 +129,13 @@ public class measurement extends ActionBarActivity implements OnClickListener{
 			for(BluetoothDevice device : pairedDevices){
 				System.out.println(device.getName());
 		        mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-		        if(device.getName().equals("BOLUTEK")) // connect with device with this name, else: use getAddress() to obtain MAC address
+		        if(device.getName().equals("HC-05")) // connect with device with this name, else: use getAddress() to obtain MAC address
 		        {
-		        	text.setText("znalazlem");
+		        	text.setText("Device found");
 		        	arduino = device;
 						try {
+							System.out.println("ZNALAZLEM BOLUTKA");
 							getDataFromArduino(arduino);
-						//	final Handler handler = new Handler();
-						//	ConnectThread connection = new ConnectThread(arduino);
 
 						} catch (IOException e) {
 							text.setText("Error occured");
@@ -154,40 +161,73 @@ public class measurement extends ActionBarActivity implements OnClickListener{
         send = arduinoSocket.getOutputStream();
         receive = arduinoSocket.getInputStream();
         
+        
         String ms = "start";     // send START signal
         send.write(ms.getBytes());
+        System.out.println("wyslalem znaki");
         
         final Handler handler = new Handler();
        Thread workerThread = new Thread(new Runnable()
         {
+    	   
             public void run()
             {
-            	byte[] buffer = new byte[1024];  // buffer store for the stream
-            	
-            	long start = System.currentTimeMillis();
-            	long end = start + 20*1000;
-    	        
-    	        while (System.currentTimeMillis() < end) {
+         	   System.out.println("zaczynam nowy wˆtek");
+                final byte delimiter = 10; //This is the ASCII code for a newline character
+                
+                boolean stopWorker = false;
+                int readBufferPosition = 0;
+                byte [] readBuffer = new byte[1024];
+    	         
+    	        while (!Thread.currentThread().isInterrupted() && !stopWorker) {
     	        	
-    	            try { 
-//    	                System.out.println("JESTEM");
+                        try 
+                        {
+                            int bytesAvailable = receive.available();                        
+                            if(bytesAvailable > 0)
+                            {
+                                byte[] packetBytes = new byte[bytesAvailable];
+                                receive.read(packetBytes);
+                                System.out.println(packetBytes);
+                                for(int i=0;i<bytesAvailable;i++)
+                                {
+                                    byte b = packetBytes[i];
+                                    if(b == delimiter)
+                                    {
+                                        byte[] encodedBytes = new byte[readBufferPosition];
+                                        System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                        final String data = new String(encodedBytes, "US-ASCII");
+                                        readBufferPosition = 0;
+                                        
+                                        handler.post(new Runnable()
+                                        {
+                                            public void run()
+                                            {
+                                                System.out.println("wynik to: "  + data);
+                                                finalresult = Integer.parseInt(data.trim());
+                                                System.out.println("final result: " + finalresult);
+                                        		calculateResult(finalresult); 
+                                        		drawGraph();
+//                                        		try{
+//                                        			String time = getCurrentTimeFormat("d-m-y h-m-s");
+//                                        			addEvent(finalresult, time);
+//                                        			
+//                                        		} finally{
+//                                        			app.db.close();
+//                                        		}
+                                            }
+                                        });
+                                    }
+                                    else
+                                    {
+                                        readBuffer[readBufferPosition++] = b;
+                                    }
+                                }
+                            }
+                        } 
 
-    	                final int bytes = receive.read();  ////////??????????????????????????????
-    	                System.out.println(bytes-48);
-//    	                System.out.println("JESTEMMMMMMMM"); 
-    	                handler.post(new Runnable()
-    	                 
-    	                {
-     	                	public void run() 
-    	                	{ 
-    	                		measurements.add(bytes-48);
-//    	                		drawGraph(bytes);
-    	                	//	System.out.println(bytes);
-    	                	}
-    	                }
-    	                );
-    	            } catch (IOException e) {
- //   	                System.out.println("SPADAM");
+    	            catch (IOException e) {
+    	            	System.out.println("wywalam wyjatek");
     	                break;
     	            }  
     	        } 
@@ -197,16 +237,38 @@ public class measurement extends ActionBarActivity implements OnClickListener{
         workerThread.start();
         
 	}
+	
+
+    	
+
 
 	@Override
 	public void onClick(View v) {
 		if(v.getId() == R.id.measureStart){
 			estabilishConnection();
-
-		calculateResult(); // after minute of measurement? 
+	
 		}
 
 	}
+	
+	private String getCurrentTimeFormat(String timeFormat){
+		  String time = "";
+		  SimpleDateFormat df = new SimpleDateFormat(timeFormat);
+		  Calendar c = Calendar.getInstance();
+		  time = df.format(c.getTime());
+		 
+		  return time;
+		}
+	
+	private void addEvent(int result, String time){
+		SQLiteDatabase database = app.db.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(timeOfMeasurement, time);
+		values.put(resultOfMeasurement, result);
+		database.insertOrThrow(TABLE_NAME, null, values);
+		
+	}
+
 
 
 

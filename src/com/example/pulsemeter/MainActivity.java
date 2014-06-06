@@ -12,12 +12,12 @@ import android.widget.Button;
 public class MainActivity extends ActionBarActivity implements OnClickListener{
 
 	private final static int REQUEST_ENABLE_BT = 1;
-	int resultCode;
+	int resultCode; 
 	View measurePulse, measurementsHistory, measurementsInformation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.activity_main);
 		
 		
@@ -29,12 +29,12 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 		
 		measurementsInformation = (Button) findViewById(R.id.info);
 		measurementsInformation.setOnClickListener(this);
-	}
+	} 
 
 	
-	@Override
+	@Override 
 	public void onClick(View v) {     // commented out just for purposes of testing
-		if(v.getId() == R.id.measure){
+		if(v.getId() == R.id.measure){ 
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) // THE DEVICE DOESNT SUPPORT BLUETOOTH
 		{
@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			builder.setMessage(R.string.dialog_message).setTitle(R.string.dialog_title);
 			AlertDialog dialog = builder.create();
 			dialog.show();
-			
+			  
 		}
 		else
 		{

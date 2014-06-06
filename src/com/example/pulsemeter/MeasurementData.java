@@ -2,6 +2,7 @@ package com.example.pulsemeter;
 import static com.example.pulsemeter.Constants.TABLE_NAME;
 import static com.example.pulsemeter.Constants.timeOfMeasurement;
 import static com.example.pulsemeter.Constants.resultOfMeasurement;
+import static com.example.pulsemeter.Constants._ID;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -19,7 +20,7 @@ public class MeasurementData extends SQLiteOpenHelper{
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE "+ TABLE_NAME + " (" + timeOfMeasurement + " TIMESTAMP PRIMARY KEY, " + resultOfMeasurement + " INT NOT NULL);");
+		db.execSQL("CREATE TABLE "+ TABLE_NAME + " ( "  + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "+ timeOfMeasurement + " VARCHAR(30) , " + resultOfMeasurement + " INT NOT NULL);");
 		
 	}
 

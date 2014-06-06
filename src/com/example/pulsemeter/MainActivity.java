@@ -13,8 +13,8 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 
 	private final static int REQUEST_ENABLE_BT = 1;
 	int resultCode; 
-	View measurePulse, measurementsHistory, measurementsInformation;
-
+	View measurePulse, measurementsHistory, measurementsInformation; 
+ 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState); 
@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 
 	
 	@Override 
-	public void onClick(View v) {     // commented out just for purposes of testing
+	public void onClick(View v) {     // commented out just for purposes of testing  
 		if(v.getId() == R.id.measure){ 
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) // THE DEVICE DOESNT SUPPORT BLUETOOTH
@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener{
 			dialog.show();
 			  
 		}
-		else
+		else 
 		{
 			
 			if (!mBluetoothAdapter.isEnabled()) // BLUETOOTH IS DISABLED

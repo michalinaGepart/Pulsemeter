@@ -78,19 +78,25 @@ public class measurement extends ActionBarActivity implements OnClickListener{
 	{
 
 		int howMany = finalresult;
-		int step = 60/finalresult;
-		int x = 0;
-		dataToDraw = new GraphViewSeries(new GraphViewData[] { new GraphViewData(6,8)
+		float step = 60/finalresult;
+		float x = 0;
+		GraphViewData [] data = new GraphViewData[150];
+		dataToDraw = new GraphViewSeries(new GraphViewData[] {
+			    new GraphViewData(1, 1)
+			    , new GraphViewData(2, 1.5d)
+			    , new GraphViewData(3, 2.5d)
+			    , new GraphViewData(4, 1.0d)
 			});
 		graphView.addSeries(dataToDraw); // data
-//		dataToDraw.appendData(new GraphViewData(x, finalresult){}, true, 60);
-//		for(int i=0; i < 2; i++)
+//		for(int i=0; i < 60; i++)
 //		{
-//			dataToDraw.appendData(new GraphViewData(x, 1){}, true, 60);
-//			x += step;
-//			dataToDraw.appendData(new GraphViewData(x, 0){}, true, 60);
-//			x += step;
+//			data[i] = new GraphViewData(x,Math.sin(Math.random()));
+//			x += 1;
 //		}
+//		GraphViewSeries seriesSin = new GraphViewSeries(data);
+//		graphView.addSeries(seriesSin);
+		
+		System.out.println("DODAJE WYKRES");
 	}
 
 	public void calculateResult(int result)
